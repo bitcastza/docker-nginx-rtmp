@@ -1,6 +1,7 @@
 #!/bin/sh
 
-NGINX_CONFIG_FILE=/etc/nginx/conf/nginx.conf.d/rtmp.conf
+NGINX_CONFIG_FILE=/etc/nginx/modules-enabled/rtmp.conf
+NGINX_SITE_CONFIG_FILE=/etc/nginx/sites-enabled/rtmp.conf
 
 RTMP_CONNECTIONS=${RTMP_CONNECTIONS-1024}
 RTMP_STREAM_NAMES=${RTMP_STREAM_NAMES-live,testing}
@@ -13,56 +14,44 @@ apply_config() {
 ## Standard config:
 
 cat >${NGINX_CONFIG_FILE} <<!EOF
-worker_processes 1;
-
-events {
-    worker_connections ${RTMP_CONNECTIONS};
-}
+rtmp_auto_push on;
 !EOF
 
 ## HTTP / HLS Config
-cat >>${NGINX_CONFIG_FILE} <<!EOF
-http {
-    include             mime.types;
-    default_type        application/octet-stream;
-    sendfile            on;
-    keepalive_timeout   65;
+cat >>${NGINX_SITE_CONFIG_FILE} <<!EOF
+server {
+    listen          8080;
 
-    server {
-        listen          8080;
-        server_name     localhost;
+    location /hls {
+        types {
+            application/vnd.apple.mpegurl m3u8;
+            video/mp2ts ts;
+        }
+        root /tmp;
+        add_header  Cache-Control no-cache;
+        add_header  Access-Control-Allow-Origin *;
+    }
 
-        location /hls {
-            types {
-                application/vnd.apple.mpegurl m3u8;
-                video/mp2ts ts;
-            }
-            root /tmp;
-            add_header  Cache-Control no-cache;
-            add_header  Access-Control-Allow-Origin *;
-        }
+    location /on_publish {
+        return  201;
+    }
+    location /stat {
+        rtmp_stat all;
+        rtmp_stat_stylesheet stat.xsl;
+    }
+    location /stat.xsl {
+        alias /opt/nginx/conf/stat.xsl;
+    }
+    location /control {
+        rtmp_control all;
+    }
 
-        location /on_publish {
-            return  201;
-        }
-        location /stat {
-            rtmp_stat all;
-            rtmp_stat_stylesheet stat.xsl;
-        }
-        location /stat.xsl {
-            alias /opt/nginx/conf/stat.xsl;
-        }
-        location /control {
-            rtmp_control all;
-        }
-        
-        error_page  500 502 503 504 /50x.html;
-        location = /50x.html {
-            root html;
-        }
+    error_page  500 502 503 504 /50x.html;
+    location = /50x.html {
+        root html;
     }
 }
-        
+
 !EOF
 
 
@@ -71,7 +60,6 @@ cat >>${NGINX_CONFIG_FILE} <<!EOF
 rtmp {
     server {
         listen 1935;
-        chunk_size 4096;
 !EOF
 
 if [ "x${RTMP_PUSH_URLS}" = "x" ]; then
@@ -80,9 +68,9 @@ else
     PUSH="true"
 fi
 
-HLS="true"
+HLS="false"
 
-for STREAM_NAME in $(echo ${RTMP_STREAMS}) 
+for STREAM_NAME in $(echo ${RTMP_STREAMS})
 do
 
 echo Creating stream $STREAM_NAME
@@ -128,5 +116,4 @@ else
 fi
 
 echo "Starting server..."
-/opt/nginx/sbin/nginx -g "daemon off;"
-
+/usr/sbin/nginx -g "daemon off;"

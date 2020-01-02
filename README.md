@@ -11,13 +11,13 @@ live (or your first stream name) is also accessable via HLS on port 8080
 
 It also exposes 8080 so you can access http://<your server ip>:8080/stat to see the streaming statistics.
 
-The configuration file is in /opt/nginx/conf/
+The configuration file is in /etc/nginx/conf.d/rtmp.conf
 
 ## Running
 
 To run the container and bind the port 1935 to the host machine; run the following:
 ```
-docker run -p 1935:1935 -p 8080:8080 jasonrivers/nginx-rtmp
+docker run -p 1935:1935 -p 8080:8080 bitcacst/nginx-rtmp
 ```
 
 ### Multiple Streams:
