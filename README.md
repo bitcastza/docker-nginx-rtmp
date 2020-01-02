@@ -1,9 +1,6 @@
 # Docker-nginx-rtmp
 Docker image for an RTMP/HLS server running on nginx
 
-NGINX Version 1.13.9
-nginx-rtmp-module Version 1.2.1
-
 ## Configurations
 This image exposes port 1935 for RTMP Steams and has 2 default channels open "live" and "testing".
 
@@ -27,7 +24,7 @@ docker run      \
     -p 1935:1935        \
     -p 8080:8080        \
     -e RTMP_STREAM_NAMES=live,teststream1,teststream2   \
-    jasonrivers/nginx-rtmp
+    bitcast/nginx-rtmp
 ```
 
 ### Pushing streams
@@ -37,7 +34,7 @@ docker run      \
     -p 1935:1935        \
     -p 8080:8080        \
     -e RTMP_PUSH_URLS=rtmp://live.youtube.com/myname/streamkey,rtmp://live.twitch.tv/app/streamkey
-    jasonrivers/nginx-rtmp
+    bitcast/nginx-rtmp
 ```
 
 ## OBS Configuration
