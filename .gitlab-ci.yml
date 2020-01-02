@@ -1,11 +1,4 @@
-include:
-  - template: SAST.gitlab-ci.yml
-
-stages:
-  - deploy
-
 docker-image:
-  stage: deploy
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
