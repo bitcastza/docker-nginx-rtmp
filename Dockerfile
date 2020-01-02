@@ -1,7 +1,7 @@
 FROM debian:stable-slim
 
 RUN apt-get update -qq && apt-get upgrade -y -qq
-RUN apt-get install nginx libnginx-mod-rtmp
+RUN apt-get install -qq -y nginx libnginx-mod-rtmp
 
 ADD run.sh /
 
