@@ -1,7 +1,6 @@
 #!/bin/sh
 
-NGINX_CONFIG_FILE=/opt/nginx/conf/nginx.conf
-
+NGINX_CONFIG_FILE=/etc/nginx/conf/nginx.conf.d/rtmp.conf
 
 RTMP_CONNECTIONS=${RTMP_CONNECTIONS-1024}
 RTMP_STREAM_NAMES=${RTMP_STREAM_NAMES-live,testing}
