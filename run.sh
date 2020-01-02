@@ -21,6 +21,7 @@ rtmp_auto_push on;
 cat >>${NGINX_SITE_CONFIG_FILE} <<!EOF
 server {
     listen          8080;
+    server_name     localhost;
 
     location /hls {
         types {
@@ -40,7 +41,7 @@ server {
         rtmp_stat_stylesheet stat.xsl;
     }
     location /stat.xsl {
-        alias /opt/nginx/conf/stat.xsl;
+        alias /opt/stat.xsl;
     }
     location /control {
         rtmp_control all;

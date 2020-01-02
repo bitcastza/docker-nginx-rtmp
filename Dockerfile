@@ -3,6 +3,7 @@ FROM debian:stable-slim
 RUN apt-get update -qq && apt-get upgrade -y -qq
 RUN apt-get install -qq -y nginx-extras libnginx-mod-rtmp
 
+ADD stat.xsl /opt/
 ADD run.sh /
 
 EXPOSE 1935
