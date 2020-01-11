@@ -38,7 +38,7 @@ server {
     }
     location /stat {
         rtmp_stat all;
-        rtmp_stat_stylesheet stat.xsl;
+        rtmp_stat_stylesheet /opt/stat.xsl;
     }
     location /stat.xsl {
         alias /opt/stat.xsl;
