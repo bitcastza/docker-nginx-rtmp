@@ -6,15 +6,6 @@ on:
 jobs:
   docker-image:
     runs-on: ubuntu-latest
-    env:
-      CI_REGISTRY_IMAGE: bitcast/nginx-rtmp
-    container: docker:stable
-
-    services:
-      docker:
-        image: docker:stable-dind
-        env:
-          DOCKER_DRIVER: overlay2
 
     steps:
       - name: Check out repositrory code
@@ -23,7 +14,7 @@ jobs:
       - uses: mr-smithers-excellent/docker-build-push@v5
         name: Build & push Docker image
         with:
-          image: {{ env.CI_REGISTRY_IMAGE }}
+          image: {{ secrets.CI_REGISTRY_IMAGE }}
           tags: latest, {{ github.sha }}
           registry: dockerhub.io
           dockerfile: ./Dockerfile
